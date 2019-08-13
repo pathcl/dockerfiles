@@ -10,6 +10,7 @@ RUN apt-get update \
 ca-certificates \
 curl \
 unzip \
+openssh-client \
 jq \
 git \
 iputils-ping \
@@ -25,10 +26,11 @@ libffi-dev \
 python3-dev \
 && pip3 install ansible==2.7.8 \
 && curl https://releases.hashicorp.com/terraform/0.12.6/terraform_0.12.6_linux_amd64.zip -o /bin/terraform.zip \
-&& unzip /bin/terraform.zip -d /bin
+&& unzip /bin/terraform.zip -d /bin \
+&& mkdir /root/.ssh
 
 WORKDIR /azp
-
+COPY ./config /root/.ssh/config
 COPY ./start.sh .
 RUN chmod +x start.sh
 

@@ -1,0 +1,6 @@
+Host ssh.dev.azure.com
+    IdentityFile /root/.ssh/lsanmartin-azure
+    User git
+Host *
+   StrictHostKeyChecking no
+   UserKnownHostsFile=/dev/null
