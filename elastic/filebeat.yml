@@ -1,0 +1,10 @@
+filebeat.inputs:
+- type: log
+  paths:
+    - /var/log/apache2/access.log
+
+output.elasticsearch:
+  hosts: ["https://es.payvision.dev:9200"]
+  username: elastic
+  password: changeme
+  protocol: "https"

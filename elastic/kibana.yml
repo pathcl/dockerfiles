@@ -1,0 +1,9 @@
+server.name: es.payvision.dev
+server.host: "0"
+elasticsearch.hosts: [ "https://es.payvision.dev:9200" ]
+xpack.monitoring.ui.container.elasticsearch.enabled: true
+server.ssl.enabled: true
+server.ssl.key: /usr/share/kibana/config/payvision.key
+server.ssl.certificate: /usr/share/kibana/config/payvision.pem
+elasticsearch.username: elastic
+elasticsearch.password: changeme

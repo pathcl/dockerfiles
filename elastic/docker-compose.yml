@@ -1,0 +1,52 @@
+version: '2'
+services:
+  kibana:
+    image: docker.elastic.co/kibana/kibana:7.3.0
+    volumes:
+      - "./kibana.yml:/usr/share/kibana/config/kibana.yml"
+      - "./ssl/payvision.pem:/usr/share/kibana/config/payvision.pem"
+      - "./ssl/payvision.key:/usr/share/kibana/config/payvision.key"
+    restart: always
+    ports:
+      - "5601:5601"
+    links:
+      - es.payvision.dev
+    depends_on:
+      - es.payvision.dev
+  es.payvision.dev:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.3.0
+    environment:
+      - node.name=es01
+      - action.auto_create_index=true
+      - network.host=0.0.0.0
+      - cluster.initial_master_nodes=es01
+      - "ELASTIC_PASSWORD=changeme"
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - "logger.authc.level=DEBUG"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    mem_limit: 1g
+    volumes:
+      - "./esdata:/usr/share/elasticsearch/data"
+      - "./elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml"
+      - "./ssl/payvision.pem:/usr/share/elasticsearch/config/payvision.pem"
+      - "./ssl/payvision.key:/usr/share/elasticsearch/config/payvision.key"
+    ports:
+      - "9200:9200"
+  filebeat:
+    image: docker.elastic.co/beats/filebeat:7.3.0
+    mem_limit: 1g
+    volumes:
+      - "./filebeat.yml:/usr/share/filebeat/filebeat.yml"
+      - "./apache-logs:/var/log/apache2"
+    links:
+      - es.payvision.dev
+    depends_on:
+      - apache
+      - es.payvision.dev
+  apache:
+    image: pathcl/flog:0.4
+    volumes:
+      - "./apache-logs:/var/log/apache2"
